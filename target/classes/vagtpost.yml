@@ -1,0 +1,5 @@
+vagtpost:
+  testpost:
+    name: "Testpost"
+    location:
+    region: "test"

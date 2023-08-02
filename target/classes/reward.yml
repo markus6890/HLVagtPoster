@@ -1,0 +1,16 @@
+reward:
+  a:
+    minmoney: 100000
+    maxmoney: 1000000
+    head:
+      chance: 0.5
+  b:
+    minmoney: 1000
+    maxmoney: 10000
+    head:
+      chance: 0.5
+  c:
+    minmoney: 100
+    maxmoney: 1000
+    head:
+      chance: 0.5
