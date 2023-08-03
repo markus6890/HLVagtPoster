@@ -44,24 +44,25 @@ public class CreateVagtPost implements CommandExecutor {
         Rewards rewards = loadRewards.getRewards(region);
 
         if (alias.equalsIgnoreCase("replacevagtpost")) {
-            if (vagtPostLoader.getVagtPostInfo(name, region) == null) {
+            String id = name + region;
+            if (vagtPostLoader.getVagtPostInfo(id) == null) {
                 p.sendMessage("§cDenne vagtpost findes ikke");
                 return true;
             }
 
-            VagtPostInfo vagtPostInfo = vagtPostLoader.getVagtPostInfo(name, region);
+            VagtPostInfo vagtPostInfo = vagtPostLoader.getVagtPostInfo(id);
             vagtPostInfo.setLocation(blockLocation);
             vagtPostInfo.setRegion(region);
             vagtPostInfo.setCooldown(cooldown);
             return true;
 
         }
-        if (vagtPostLoader.getVagtPostInfo(name, region) != null) {
+        String id = name + region;
+        if (vagtPostLoader.getVagtPostInfo(id) != null) {
             p.sendMessage("§cDenne vagtpost findes allerede");
             return true;
         }
-        System.out.println("name: " + name);
-        VagtPostInfo vagtPostInfo = new VagtPostInfo(name, blockLocation, region, rewards, cooldown);
+        VagtPostInfo vagtPostInfo = new VagtPostInfo(name, blockLocation, region, rewards, cooldown, id);
         vagtPostLoader.save(vagtPostInfo);
 
 

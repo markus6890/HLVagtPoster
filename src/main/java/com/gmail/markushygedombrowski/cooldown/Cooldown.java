@@ -7,7 +7,7 @@ public class Cooldown {
 
 
     private final UtilTime utilTime;
-    public static HashMap<String, AbilityCooldown> cooldownPlayers = new HashMap<>();
+    public static HashMap<String, VagtPostAbilityCooldown> cooldownPlayers = new HashMap<>();
 
     public Cooldown(UtilTime utilTime) {
         this.utilTime = utilTime;
@@ -15,9 +15,9 @@ public class Cooldown {
 
 
     public static void add(String player, String ability, long seconds, long systime) {
-        if (!cooldownPlayers.containsKey(player)) cooldownPlayers.put(player, new AbilityCooldown(player));
+        if (!cooldownPlayers.containsKey(player)) cooldownPlayers.put(player, new VagtPostAbilityCooldown(player));
         if (isCooling(player, ability)) return;
-        cooldownPlayers.get(player).cooldownMap.put(ability, new AbilityCooldown(player, seconds * 1000, System.currentTimeMillis()));
+        cooldownPlayers.get(player).cooldownMap.put(ability, new VagtPostAbilityCooldown(player, seconds * 1000, System.currentTimeMillis()));
     }
 
     public static boolean isCooling(String player, String ability) {
