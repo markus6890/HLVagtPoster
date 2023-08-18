@@ -33,7 +33,7 @@ public class CreateVagtPost implements CommandExecutor {
             return true;
         }
         if (args.length <= 1) {
-            p.sendMessage("§c/vagtpost <number/name>, <cooldown in minutes>");
+            p.sendMessage("§c/createvagtpost <number/name>, <cooldown in minutes>");
             return true;
         }
         String name = args[0];
@@ -44,29 +44,59 @@ public class CreateVagtPost implements CommandExecutor {
         Rewards rewards = loadRewards.getRewards(region);
 
         if (alias.equalsIgnoreCase("replacevagtpost")) {
-            String id = name + region;
-            if (vagtPostLoader.getVagtPostInfo(id) == null) {
-                p.sendMessage("§cDenne vagtpost findes ikke");
-                return true;
-            }
-
-            VagtPostInfo vagtPostInfo = vagtPostLoader.getVagtPostInfo(id);
-            vagtPostInfo.setLocation(blockLocation);
-            vagtPostInfo.setRegion(region);
-            vagtPostInfo.setCooldown(cooldown);
-            return true;
+            return replaceVagtPost(p, name, cooldown, blockLocation, region);
 
         }
+        if(alias.equalsIgnoreCase("deletevagtpost")) {
+            return deleteVagtPost(p, name, region);
+        }
+
         String id = name + region;
         if (vagtPostLoader.getVagtPostInfo(id) != null) {
             p.sendMessage("§cDenne vagtpost findes allerede");
             return true;
         }
+        cooldown = cooldown * 60;
         VagtPostInfo vagtPostInfo = new VagtPostInfo(name, blockLocation, region, rewards, cooldown, id);
         vagtPostLoader.save(vagtPostInfo);
+        PlayerInfoMessages(p, name, cooldown, blockLocation, region);
 
 
         return true;
+    }
+
+    private boolean replaceVagtPost(Player p, String name, int cooldown, Location blockLocation, String region) {
+        String id = name + region;
+        if (vagtPostLoader.getVagtPostInfo(id) == null) {
+            p.sendMessage("§cDenne vagtpost findes ikke");
+            return true;
+        }
+
+        VagtPostInfo vagtPostInfo = vagtPostLoader.getVagtPostInfo(id);
+        vagtPostInfo.setLocation(blockLocation);
+        vagtPostInfo.setRegion(region);
+        vagtPostInfo.setCooldown(cooldown);
+        return true;
+    }
+
+    private boolean deleteVagtPost(Player p, String name, String region) {
+        String id = name + region;
+        if (vagtPostLoader.getVagtPostInfo(id) == null) {
+            p.sendMessage("§cDenne vagtpost findes ikke");
+            return true;
+        }
+        VagtPostInfo vagtPostInfo = vagtPostLoader.getVagtPostInfo(id);
+        vagtPostLoader.remove(vagtPostInfo);
+        p.sendMessage("§aVagtPosten er blevet slettet");
+        return true;
+    }
+
+    private void PlayerInfoMessages(Player p, String name, int cooldown, Location blockLocation, String region) {
+        p.sendMessage("§aVagtPosten er blevet oprettet");
+        p.sendMessage("§aNavn: " + name);
+        p.sendMessage("§aRegion: " + region);
+        p.sendMessage("§aCooldown: " + cooldown);
+        p.sendMessage("block: " + blockLocation);
     }
 
     public String getRegion(Location location) {

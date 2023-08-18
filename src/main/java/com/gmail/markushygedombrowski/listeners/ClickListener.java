@@ -34,6 +34,7 @@ public class ClickListener implements Listener {
         }
 
 
+
         if (!player.hasPermission("vagtpost")) {
             player.sendMessage("§4Du har ikke tilladelse til at bruge vagtpost");
             event.setCancelled(true);

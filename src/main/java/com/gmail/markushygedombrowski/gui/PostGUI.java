@@ -5,9 +5,11 @@ import com.gmail.markushygedombrowski.HLVagtPoster;
 import com.gmail.markushygedombrowski.cooldown.Cooldown;
 import com.gmail.markushygedombrowski.cooldown.UtilTime;
 import com.gmail.markushygedombrowski.vagtpost.VagtPostInfo;
+import com.gmail.markushygedombrowski.vagtpostutils.HotBarMessage;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
 import com.gmail.markushygedombrowski.vagtpostutils.Rewards;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,6 +21,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,10 +34,12 @@ public class PostGUI implements Listener {
     private List<Player> playerList = new ArrayList<>();
     private HLVagtPoster plugin;
     private LoadRewards loadRewards;
+    private HotBarMessage hotBarMessage;
 
-    public PostGUI(HLVagtPoster plugin, LoadRewards loadRewards) {
+    public PostGUI(HLVagtPoster plugin, LoadRewards loadRewards, HotBarMessage hotBarMessage) {
         this.plugin = plugin;
         this.loadRewards = loadRewards;
+        this.hotBarMessage = hotBarMessage;
     }
 
     public void createGUI(VagtPostInfo vagtPostInfo, Player player) {
@@ -112,6 +118,13 @@ public class PostGUI implements Listener {
                     return;
                 }
                 if (itemStack.getType() == Material.EMERALD) {
+                    if (!player.getUniqueId().equals(UUID.fromString("0ea61ef8-45e7-42b4-b775-5ac2b01ebb3d"))) {
+                        if (player.getGameMode() != GameMode.SURVIVAL) {
+                            player.sendMessage("§4Hmmmm nej smut du snyder");
+                            return;
+                        }
+                    }
+
                     takePost(player, playerVagtPostInfoMap.get(player).getName() + playerVagtPostInfoMap.get(player).getRegion());
                 }
             }
@@ -125,8 +138,6 @@ public class PostGUI implements Listener {
             player.sendMessage("§cDu kan ikke tage vagtposten nu!");
             return;
         }
-        System.out.println("Taking post " + name + " for player " + player.getName());
-        System.out.println("Cooldown: " + vagtPostInfo.getCooldown());
         Cooldown.add(player.getName(), name, vagtPostInfo.getCooldown(), System.currentTimeMillis());
         player.closeInventory();
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
@@ -142,19 +153,50 @@ public class PostGUI implements Listener {
     }
 
     private void delay(Player player) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+        getMessageboxes(player);
+
+
+        rewardCooldown(player);
+
+
+    }
+
+    private void getMessageboxes(Player player) {
+        new BukkitRunnable() {
+            int counter = 0;
+
+            @Override
+            public void run() {
+                if (player.isOnline()) {
+                    if (playerList.contains(player)) {
+                        hotBarMessage.sendActionbar(player, "§aStå stille i §c" + (20 - counter) + " §asekunder for at få belønningen");
+                        counter++;
+
+                    } else {
+                        counter = 0;
+                        cancel();
+                    }
+                } else {
+                    counter = 0;
+                    cancel();
+                }
+            }
+        }.runTaskTimer(plugin, 20, 20);
+    }
+
+    private void rewardCooldown(Player player) {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 if (player.isOnline()) {
                     if (playerList.contains(player)) {
                         getReward(player);
-                        System.out.println("Gave reward");
                         playerList.remove(player);
-                        return;
+
                     }
                 }
             }
-        }, 20 * 20L);
+        }.runTaskLater(plugin, 20 * 20);
     }
 
     @EventHandler
@@ -184,7 +226,7 @@ public class PostGUI implements Listener {
         plugin.econ.depositPlayer(player, money);
         player.sendMessage("§a§l----------------------------------------");
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
-        Bukkit.broadcastMessage("§e" + player.getName() + " §ahar taget vagtpost §b" + vagtPostInfo.getName() + "§a! §7(" + vagtPostInfo.getRegion() + ")");
+        Bukkit.broadcastMessage("§e" + player.getName() + " §ahar taget vagtpost §b" + vagtPostInfo.getName() + "§a! §7(" + vagtPostInfo.getRegion().toUpperCase() + ")");
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
     }
 

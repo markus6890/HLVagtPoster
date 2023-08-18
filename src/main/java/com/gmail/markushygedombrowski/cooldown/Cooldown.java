@@ -48,14 +48,24 @@ public class Cooldown {
         if (cooldownPlayers.isEmpty()) {
             return;
         }
-        for (Iterator<String> it = cooldownPlayers.keySet().iterator(); it.hasNext(); ) {
-            String key = it.next();
-            for (Iterator<String> iter = cooldownPlayers.get(key).cooldownMap.keySet().iterator(); iter.hasNext(); ) {
-                String name = iter.next();
-                if (getRemaining(key, name) <= 0.0) {
-                    removeCooldown(key, name);
-                }
+        new HashMap<>(cooldownPlayers).forEach((player, abilityCooldown) -> {
+            if (abilityCooldown.cooldownMap.isEmpty()) {
+                return;
             }
-        }
+            abilityCooldownLoop(player, abilityCooldown);
+        });
+    }
+
+    private static void abilityCooldownLoop(String player, VagtPostAbilityCooldown abilityCooldown) {
+        abilityCooldown.cooldownMap.forEach((ability, cooldown) -> {
+            if (ability == null) {
+                System.out.println("Ability is null");
+                return;
+            }
+            if (getRemaining(player, ability) <= 0.0) {
+                removeCooldown(player, ability);
+            }
+
+        });
     }
 }

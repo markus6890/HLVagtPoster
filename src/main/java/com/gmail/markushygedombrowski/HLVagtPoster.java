@@ -6,6 +6,7 @@ import com.gmail.markushygedombrowski.cooldown.Cooldown;
 import com.gmail.markushygedombrowski.gui.PostGUI;
 import com.gmail.markushygedombrowski.listeners.ClickListener;
 import com.gmail.markushygedombrowski.vagtpost.VagtPostLoader;
+import com.gmail.markushygedombrowski.vagtpostutils.HotBarMessage;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
 import com.gmail.markushygedombrowski.vagtpostutils.VagtPostManager;
 import net.milkbowl.vault.economy.Economy;
@@ -31,8 +32,9 @@ public class HLVagtPoster extends JavaPlugin {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+        HotBarMessage hotBarMessage = new HotBarMessage();
 
-        PostGUI postGUI = new PostGUI(this, loadRewards);
+        PostGUI postGUI = new PostGUI(this, loadRewards, hotBarMessage);
         Bukkit.getServer().getPluginManager().registerEvents(postGUI, this);
         ClickListener clickListener = new ClickListener(vagtPostLoader, postGUI);
         Bukkit.getServer().getPluginManager().registerEvents(clickListener, this);

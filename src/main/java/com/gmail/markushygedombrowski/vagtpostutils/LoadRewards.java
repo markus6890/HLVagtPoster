@@ -21,7 +21,7 @@ public class LoadRewards {
             String region = config.getString(path + "region");
             int minmoney = config.getInt(path + "minmoney");
             int maxmoney = config.getInt(path + "maxmoney");
-            String head = config.getString(path + "head");
+            String head = config.getString(path + "head.id");
             double chance = config.getDouble(path + "head.chance");
             int droped = config.getInt(path + "head.droped");
             int goldngmin = config.getInt(path + "goldngmin");
@@ -37,9 +37,9 @@ public class LoadRewards {
         config.set("rewards." + rewards.getRegion() + ".region", rewards.getRegion());
         config.set("rewards." + rewards.getRegion() + ".minmoney", rewards.getMinmoney());
         config.set("rewards." + rewards.getRegion() + ".maxmoney", rewards.getMaxmoney());
-        config.set("rewards." + rewards.getRegion() + ".head", rewards.getHead());
+        config.set("rewards." + rewards.getRegion() + ".head.id", rewards.getHead());
         config.set("rewards." + rewards.getRegion() + ".chance", rewards.getChance());
-
+        config.set("rewards." + rewards.getRegion() + ".droped", rewards.getDroped());
         vagtPostManager.saveReward();
         rewardsMap.put(rewards.getRegion(), rewards);
     }

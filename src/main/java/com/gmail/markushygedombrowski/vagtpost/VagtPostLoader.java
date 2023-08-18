@@ -31,7 +31,7 @@ public class VagtPostLoader {
             String region = config.getString(path + "region");
             int cooldown = config.getInt(path + "cooldown");
             Rewards rewards = loadRewards.getRewards(region);
-            cooldown = cooldown * 60;
+            cooldown = (cooldown * 60);
             VagtPostInfo vagtPostInfo = new VagtPostInfo(name, location, region, rewards, cooldown, key);
             vagtPostMap.put(location, vagtPostInfo);
             vagtPostNameMap.put(vagtPostInfo.getId(), vagtPostInfo);
@@ -48,6 +48,14 @@ public class VagtPostLoader {
         configM.saveVagtPost();
         vagtPostMap.put(vagtPostInfo.getLocation(), vagtPostInfo);
         vagtPostNameMap.put(vagtPostInfo.getName() + vagtPostInfo.getRegion(), vagtPostInfo);
+    }
+    public void remove(VagtPostInfo vagtPostInfo) {
+        FileConfiguration config = configM.getVagtPost();
+        String id = vagtPostInfo.getId();
+        config.set("vagtpost." + id, null);
+        configM.saveVagtPost();
+        vagtPostMap.remove(vagtPostInfo.getLocation());
+        vagtPostNameMap.remove(vagtPostInfo.getName() + vagtPostInfo.getRegion());
     }
 
     public VagtPostInfo getVagtPostInfo(Location vagtPost) {
