@@ -2,9 +2,11 @@ package com.gmail.markushygedombrowski;
 
 import com.gmail.markushygedombrowski.commands.CreateVagtPost;
 import com.gmail.markushygedombrowski.commands.ReloadCmd;
+import com.gmail.markushygedombrowski.commands.SetHeadCommand;
 import com.gmail.markushygedombrowski.cooldown.Cooldown;
 import com.gmail.markushygedombrowski.gui.PostGUI;
 import com.gmail.markushygedombrowski.listeners.ClickListener;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.vagtpost.VagtPostLoader;
 import com.gmail.markushygedombrowski.vagtpostutils.HotBarMessage;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
@@ -25,21 +27,19 @@ public class HLVagtPoster extends JavaPlugin {
     public Economy econ = null;
 
     public void onEnable() {
-
-        CompletableFuture<Void> loadManagers = CompletableFuture.runAsync(this::loadManagers);
-        try {
-            loadManagers.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        loadManagers();
+        PlayerProfiles playerProfiles = HLvagt.getInstance().getPlayerProfiles();
         HotBarMessage hotBarMessage = new HotBarMessage();
 
-        PostGUI postGUI = new PostGUI(this, loadRewards, hotBarMessage);
+        PostGUI postGUI = new PostGUI(this, loadRewards, hotBarMessage, playerProfiles);
         Bukkit.getServer().getPluginManager().registerEvents(postGUI, this);
         ClickListener clickListener = new ClickListener(vagtPostLoader, postGUI);
         Bukkit.getServer().getPluginManager().registerEvents(clickListener, this);
         CreateVagtPost createVagtPost = new CreateVagtPost(vagtPostLoader,loadRewards);
         getCommand("createvagtpost").setExecutor(createVagtPost);
+        SetHeadCommand setHeadCommand = new SetHeadCommand(loadRewards);
+        getCommand("sethead").setExecutor(setHeadCommand);
+
         if (!setupEconomy()) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);

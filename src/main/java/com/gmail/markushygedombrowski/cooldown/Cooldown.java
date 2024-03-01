@@ -52,20 +52,13 @@ public class Cooldown {
             if (abilityCooldown.cooldownMap.isEmpty()) {
                 return;
             }
-            abilityCooldownLoop(player, abilityCooldown);
+            abilityCooldownLoop(abilityCooldown);
         });
     }
 
-    private static void abilityCooldownLoop(String player, VagtPostAbilityCooldown abilityCooldown) {
-        abilityCooldown.cooldownMap.forEach((ability, cooldown) -> {
-            if (ability == null) {
-                System.out.println("Ability is null");
-                return;
-            }
-            if (getRemaining(player, ability) <= 0.0) {
-                removeCooldown(player, ability);
-            }
-
+    private static void abilityCooldownLoop(VagtPostAbilityCooldown abilityCooldown) {
+        abilityCooldown.cooldownMap.entrySet().removeIf(entry -> {
+            return entry.getValue().seconds + entry.getValue().systime <= System.currentTimeMillis();
         });
     }
 }

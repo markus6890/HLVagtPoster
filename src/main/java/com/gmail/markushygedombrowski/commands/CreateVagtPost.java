@@ -56,7 +56,6 @@ public class CreateVagtPost implements CommandExecutor {
             p.sendMessage("§cDenne vagtpost findes allerede");
             return true;
         }
-        cooldown = cooldown * 60;
         VagtPostInfo vagtPostInfo = new VagtPostInfo(name, blockLocation, region, rewards, cooldown, id);
         vagtPostLoader.save(vagtPostInfo);
         PlayerInfoMessages(p, name, cooldown, blockLocation, region);

@@ -4,6 +4,8 @@ package com.gmail.markushygedombrowski.gui;
 import com.gmail.markushygedombrowski.HLVagtPoster;
 import com.gmail.markushygedombrowski.cooldown.Cooldown;
 import com.gmail.markushygedombrowski.cooldown.UtilTime;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.vagtpost.VagtPostInfo;
 import com.gmail.markushygedombrowski.vagtpostutils.HotBarMessage;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
@@ -35,11 +37,13 @@ public class PostGUI implements Listener {
     private HLVagtPoster plugin;
     private LoadRewards loadRewards;
     private HotBarMessage hotBarMessage;
+    private PlayerProfiles playerProfiles;
 
-    public PostGUI(HLVagtPoster plugin, LoadRewards loadRewards, HotBarMessage hotBarMessage) {
+    public PostGUI(HLVagtPoster plugin, LoadRewards loadRewards, HotBarMessage hotBarMessage, PlayerProfiles playerProfiles) {
         this.plugin = plugin;
         this.loadRewards = loadRewards;
         this.hotBarMessage = hotBarMessage;
+        this.playerProfiles = playerProfiles;
     }
 
     public void createGUI(VagtPostInfo vagtPostInfo, Player player) {
@@ -48,7 +52,6 @@ public class PostGUI implements Listener {
         ItemStack glassItem = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
 
         ItemMeta itemMeta;
-        System.out.println("Creating GUI for " + vagtPostInfo.getName());
         if (Cooldown.isCooling(player.getName(), vagtPostInfo.getName() + vagtPostInfo.getRegion())) {
             clickItem = coolDownItem(vagtPostInfo, player);
             glassItem = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
@@ -228,6 +231,8 @@ public class PostGUI implements Listener {
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
         Bukkit.broadcastMessage("§e" + player.getName() + " §ahar taget vagtpost §b" + vagtPostInfo.getName() + "§a! §7(" + vagtPostInfo.getRegion().toUpperCase() + ")");
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
+        PlayerProfile playerProfile = playerProfiles.getPlayerProfile(player.getUniqueId());
+        playerProfile.setVagtposter(playerProfile.getVagtposter() + 1);
     }
 
     private void head(Player player, Rewards rewards) {

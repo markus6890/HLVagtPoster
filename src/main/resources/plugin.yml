@@ -1,7 +1,7 @@
 main: com.gmail.markushygedombrowski.HLVagtPoster
 version: "1.0"
 name: HLVagtPoster
-depend: [Vault,WorldGuard,WorldEdit,HLUtils,HolographicDisplays]
+depend: [Vault,WorldGuard,WorldEdit,HLUtils,HolographicDisplays,HLvagt,HLVagt]
 commands:
   createvagtpost:
     description: "create vagtpost"
@@ -9,3 +9,6 @@ commands:
   reloadvagtpost:
     description: "reload vagtpost"
     aliases: ["rlvagtpost"]
+  sethead:
+    description: "set head"
+    aliases: ["sethead"]

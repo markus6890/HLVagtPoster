@@ -8,6 +8,7 @@ com\gmail\markushygedombrowski\vagtpostutils\VagtPostManager.class
 com\gmail\markushygedombrowski\cooldown\Cooldown.class
 com\gmail\markushygedombrowski\cooldown\UtilMath.class
 com\gmail\markushygedombrowski\commands\CreateVagtPost.class
+com\gmail\markushygedombrowski\commands\SetHeadCommand.class
 com\gmail\markushygedombrowski\commands\ReloadCmd.class
 com\gmail\markushygedombrowski\vagtpostutils\HotBarMessage.class
 com\gmail\markushygedombrowski\HLVagtPoster$1.class

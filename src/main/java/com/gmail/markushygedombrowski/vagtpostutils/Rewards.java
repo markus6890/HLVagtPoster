@@ -64,6 +64,10 @@ public class Rewards {
     public ItemStack getHeadItem() {
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         headItem = api.getItemHead(head);
+        if(headItem == null) {
+            System.out.println("§cHead not found: " + head);
+            return null;
+        }
         return headItem;
     }
 
