@@ -13,11 +13,12 @@ public class Rewards {
     private int goldngmin;
     private int goldngmax;
     private double goldchance;
+    private int exp;
 
     private int droped;
 
 
-    public Rewards(String region, int minmoney, int maxmoney, String head, double chance, int goldngmin, int goldngmax, double goldchance, int droped) {
+    public Rewards(String region, int minmoney, int maxmoney, String head, double chance, int goldngmin, int goldngmax, double goldchance, int droped, int exp) {
         this.region = region;
         this.minmoney = minmoney;
         this.maxmoney = maxmoney;
@@ -27,6 +28,7 @@ public class Rewards {
         this.goldngmax = goldngmax;
         this.goldchance = goldchance;
         this.droped = droped;
+        this.exp = exp;
     }
 
     public int getMaxmoney() {
@@ -110,4 +112,8 @@ public class Rewards {
     public void setChance(double chance) {
         this.chance = chance;
     }
+    public int getExp() {
+        return exp;
+    }
+
 }

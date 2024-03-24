@@ -27,8 +27,9 @@ public class LoadRewards {
             int goldngmin = config.getInt(path + "goldngmin");
             int goldngmax = config.getInt(path + "goldngmax");
             double goldchance = config.getDouble(path + "goldchance");
+            int exp = config.getInt(path + "exp");
 
-            Rewards rewards = new Rewards(region, minmoney, maxmoney, head, chance, goldngmin, goldngmax, goldchance, droped);
+            Rewards rewards = new Rewards(region, minmoney, maxmoney, head, chance, goldngmin, goldngmax, goldchance, droped, exp);
             rewardsMap.put(key, rewards);
         });
     }
@@ -40,6 +41,7 @@ public class LoadRewards {
         config.set("rewards." + rewards.getRegion() + ".head.id", rewards.getHead());
         config.set("rewards." + rewards.getRegion() + ".chance", rewards.getChance());
         config.set("rewards." + rewards.getRegion() + ".droped", rewards.getDroped());
+        config.set("rewards." + rewards.getRegion() + ".exp", rewards.getExp());
         vagtPostManager.saveReward();
         rewardsMap.put(rewards.getRegion(), rewards);
     }

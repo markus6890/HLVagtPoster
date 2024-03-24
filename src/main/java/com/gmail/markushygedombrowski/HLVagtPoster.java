@@ -6,11 +6,13 @@ import com.gmail.markushygedombrowski.commands.SetHeadCommand;
 import com.gmail.markushygedombrowski.cooldown.Cooldown;
 import com.gmail.markushygedombrowski.gui.PostGUI;
 import com.gmail.markushygedombrowski.listeners.ClickListener;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.vagtpost.VagtPostLoader;
 import com.gmail.markushygedombrowski.vagtpostutils.HotBarMessage;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
 import com.gmail.markushygedombrowski.vagtpostutils.VagtPostManager;
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -28,14 +30,22 @@ public class HLVagtPoster extends JavaPlugin {
 
     public void onEnable() {
         loadManagers();
-        PlayerProfiles playerProfiles = HLvagt.getInstance().getPlayerProfiles();
+        PlayerProfiles playerProfiles = VagtProfiler.getInstance().getPlayerProfiles();
         HotBarMessage hotBarMessage = new HotBarMessage();
+        if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            getLogger().severe("*** HolographicDisplays is not installed or not enabled. ***");
+            getLogger().severe("*** This plugin will be disabled. ***");
+            this.setEnabled(false);
+            return;
+        }
+
+        HolographicDisplaysAPI api = HolographicDisplaysAPI.get(this);
 
         PostGUI postGUI = new PostGUI(this, loadRewards, hotBarMessage, playerProfiles);
         Bukkit.getServer().getPluginManager().registerEvents(postGUI, this);
         ClickListener clickListener = new ClickListener(vagtPostLoader, postGUI);
         Bukkit.getServer().getPluginManager().registerEvents(clickListener, this);
-        CreateVagtPost createVagtPost = new CreateVagtPost(vagtPostLoader,loadRewards);
+        CreateVagtPost createVagtPost = new CreateVagtPost(vagtPostLoader,loadRewards, api);
         getCommand("createvagtpost").setExecutor(createVagtPost);
         SetHeadCommand setHeadCommand = new SetHeadCommand(loadRewards);
         getCommand("sethead").setExecutor(setHeadCommand);

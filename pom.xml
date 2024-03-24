@@ -85,9 +85,10 @@
         </dependency>
         <dependency>
             <groupId>com.github.markus6890</groupId>
-            <artifactId>HLVagt1</artifactId>
-            <version>e4dfde9350</version>
+            <artifactId>VagtProfiler</artifactId>
+            <version>dfcb2d16c2</version>
         </dependency>
+
 
     </dependencies>
 

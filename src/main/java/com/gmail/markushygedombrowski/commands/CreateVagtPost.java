@@ -5,6 +5,8 @@ import com.gmail.markushygedombrowski.vagtpost.VagtPostInfo;
 import com.gmail.markushygedombrowski.vagtpost.VagtPostLoader;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
 import com.gmail.markushygedombrowski.vagtpostutils.Rewards;
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,10 +17,12 @@ public class CreateVagtPost implements CommandExecutor {
 
     private VagtPostLoader vagtPostLoader;
     private LoadRewards loadRewards;
+    private HolographicDisplaysAPI hologram;
 
-    public CreateVagtPost(VagtPostLoader vagtPostLoader, LoadRewards loadRewards) {
+    public CreateVagtPost(VagtPostLoader vagtPostLoader, LoadRewards loadRewards, HolographicDisplaysAPI hologram) {
         this.vagtPostLoader = vagtPostLoader;
         this.loadRewards = loadRewards;
+        this.hologram = hologram;
     }
 
     @Override
@@ -57,6 +61,11 @@ public class CreateVagtPost implements CommandExecutor {
             return true;
         }
         VagtPostInfo vagtPostInfo = new VagtPostInfo(name, blockLocation, region, rewards, cooldown, id);
+        Location loc = blockLocation.clone().add(0.5, 1.5, 0.5);
+        Hologram holo = hologram.createHologram(loc);
+        holo.getLines().appendText("§c§l⚠ Vagt Post " + name + " ⚠");
+
+
         vagtPostLoader.save(vagtPostInfo);
         PlayerInfoMessages(p, name, cooldown, blockLocation, region);
 
