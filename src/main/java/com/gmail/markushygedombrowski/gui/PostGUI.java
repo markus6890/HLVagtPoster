@@ -8,13 +8,12 @@ import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 
 import com.gmail.markushygedombrowski.vagtpost.VagtPostInfo;
+import com.gmail.markushygedombrowski.vagtpost.VagtPostLoader;
 import com.gmail.markushygedombrowski.vagtpostutils.HotBarMessage;
 import com.gmail.markushygedombrowski.vagtpostutils.LoadRewards;
 import com.gmail.markushygedombrowski.vagtpostutils.Rewards;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -40,11 +39,14 @@ public class PostGUI implements Listener {
     private HotBarMessage hotBarMessage;
     private PlayerProfiles playerProfiles;
 
-    public PostGUI(HLVagtPoster plugin, LoadRewards loadRewards, HotBarMessage hotBarMessage, PlayerProfiles playerProfiles) {
+    private VagtPostLoader vagtPostLoader;
+
+    public PostGUI(HLVagtPoster plugin, LoadRewards loadRewards, HotBarMessage hotBarMessage, PlayerProfiles playerProfiles, VagtPostLoader vagtPostLoader) {
         this.plugin = plugin;
         this.loadRewards = loadRewards;
         this.hotBarMessage = hotBarMessage;
         this.playerProfiles = playerProfiles;
+        this.vagtPostLoader = vagtPostLoader;
     }
 
     public void createGUI(VagtPostInfo vagtPostInfo, Player player) {
@@ -95,7 +97,7 @@ public class PostGUI implements Listener {
         lore.add(" ");
         lore.add("§9§lBelønning:");
         System.out.println("chance: " + rewards.getChance());
-        lore.add("§7Du har §a" + rewards.getChance() + "% §7chance for at få: §b" + rewards.getHeadItem().getItemMeta().getDisplayName());
+        lore.add("§7Du har §a" + rewards.getChance() + "% §7chance for at få:§b Random Head");
         lore.add("§7Du har §a" + rewards.getGoldchance() + "% §7chance for at få mellem: §6" + rewards.getGoldngmin() + " §7og §6" + rewards.getGoldngmax() + " §7gold");
         lore.add("§7Du kan få mellem §a" + rewards.getMinmoney() + "$ §7og §a" + rewards.getMaxmoney() + "$");
         lore.add("§7du for §b" + rewards.getExp() + " §3exp");
@@ -148,7 +150,6 @@ public class PostGUI implements Listener {
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
         Bukkit.broadcastMessage("§e" + player.getName() + " §a er í gang med at tage en vagtpost§a! §7(" + vagtPostInfo.getRegion().toUpperCase() + ")");
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
-        player.sendTitle("§d§lVagt Post", "§aDu har taget vagtposten");
         player.sendMessage("§a§l----------------------------------------");
         player.sendMessage("§aStå stille i §c20 §asekunder for at få belønningen");
         player.sendMessage("§a§l----------------------------------------");
@@ -224,6 +225,7 @@ public class PostGUI implements Listener {
         int money = ThreadLocalRandom.current().nextInt(rewards.getMinmoney(), rewards.getMaxmoney() + 1);
         Random r = new Random();
         int exp = r.nextInt(rewards.getExp());
+        player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
         player.sendMessage("§a§l----------------------------------------");
         player.sendMessage("§aDu har nu fået din belønning");
         player.sendMessage("§aDu fik §b" + money + "$");
@@ -236,14 +238,21 @@ public class PostGUI implements Listener {
         Bukkit.broadcastMessage("§e" + player.getName() + " §ahar taget en vagtpost§a! §7(" + vagtPostInfo.getRegion().toUpperCase() + ")");
         Bukkit.broadcastMessage("§c§l------§4§lVagt Post§c§l------");
         PlayerProfile playerProfile = playerProfiles.getPlayerProfile(player.getUniqueId());
-        playerProfile.setVagtposter(playerProfile.getVagtposter() + 1);
-        playerProfile.setXp(playerProfile.getXp() + exp);
+        double exp2 = playerProfile.castPropertyToInt(playerProfile.getProperty("exp")) + exp;
+        double vagtposter1 = playerProfile.castPropertyToInt(playerProfile.getProperty("vagtposter"));
+        System.out.println("vagtposter: " + vagtposter1);
+        System.out.println("exp: " + exp2);
+        playerProfile.setProperty("vagtposter", vagtposter1 + 1);
+        playerProfile.setXp(exp2);
     }
 
     private void head(Player player, Rewards rewards) {
-        if (procent(rewards.getChance())) {
-            player.sendMessage("§aDu fik også §b" + rewards.getHeadItem().getItemMeta().getDisplayName());
-            player.getInventory().addItem(rewards.getHeadItem());
+        if (procent(rewards.getChance()) || vagtPostLoader.getHeadTest(player.getUniqueId())) {
+            HeadDatabaseAPI api = new HeadDatabaseAPI();
+            ItemStack itemStack = api.getRandomHead();
+            player.sendMessage("§aDu fik også §b" + itemStack.getItemMeta().getDisplayName());
+
+            player.getInventory().addItem(itemStack);
             rewards.setDroped(rewards.getDroped() + 1);
             loadRewards.save(rewards);
 

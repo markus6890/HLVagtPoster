@@ -36,6 +36,10 @@ public class CreateVagtPost implements CommandExecutor {
             p.sendMessage("§cDu har ikke tilladelse til at bruge denne kommando");
             return true;
         }
+        if (alias.equalsIgnoreCase("vagtposthead")) {
+            return vagtPostHead(p);
+
+        }
         if (args.length <= 1) {
             p.sendMessage("§c/createvagtpost <number/name>, <cooldown in minutes>");
             return true;
@@ -55,6 +59,7 @@ public class CreateVagtPost implements CommandExecutor {
             return deleteVagtPost(p, name, region);
         }
 
+
         String id = name + region;
         if (vagtPostLoader.getVagtPostInfo(id) != null) {
             p.sendMessage("§cDenne vagtpost findes allerede");
@@ -70,6 +75,17 @@ public class CreateVagtPost implements CommandExecutor {
         PlayerInfoMessages(p, name, cooldown, blockLocation, region);
 
 
+        return true;
+    }
+
+    private boolean vagtPostHead(Player p) {
+        if (vagtPostLoader.getHeadTest(p.getUniqueId())) {
+            vagtPostLoader.removeHeadTest(p.getUniqueId());
+            p.sendMessage("§cDu har slået vagtpost head test fra");
+            return true;
+        }
+        vagtPostLoader.setHeadTest(p.getUniqueId(), true);
+        p.sendMessage("§aDu har slået vagtpost head test til");
         return true;
     }
 

@@ -5,7 +5,7 @@ depend: [Vault,WorldGuard,WorldEdit,HLUtils,HolographicDisplays,VagtProfiler]
 commands:
   createvagtpost:
     description: "create vagtpost"
-    aliases: ["replacevagtpost","deletevagtpost"]
+    aliases: ["replacevagtpost","deletevagtpost","vagtposthead"]
   reloadvagtpost:
     description: "reload vagtpost"
     aliases: ["rlvagtpost"]

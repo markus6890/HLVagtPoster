@@ -41,7 +41,7 @@ public class HLVagtPoster extends JavaPlugin {
 
         HolographicDisplaysAPI api = HolographicDisplaysAPI.get(this);
 
-        PostGUI postGUI = new PostGUI(this, loadRewards, hotBarMessage, playerProfiles);
+        PostGUI postGUI = new PostGUI(this, loadRewards, hotBarMessage, playerProfiles,vagtPostLoader);
         Bukkit.getServer().getPluginManager().registerEvents(postGUI, this);
         ClickListener clickListener = new ClickListener(vagtPostLoader, postGUI);
         Bukkit.getServer().getPluginManager().registerEvents(clickListener, this);

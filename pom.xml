@@ -86,11 +86,7 @@
         <dependency>
             <groupId>com.github.markus6890</groupId>
             <artifactId>VagtProfiler</artifactId>
-            <version>dfcb2d16c2</version>
+            <version>9255bdf0d6</version>
         </dependency>
-
-
     </dependencies>
-
-
 </project>

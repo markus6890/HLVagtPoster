@@ -8,11 +8,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class VagtPostLoader {
 
     private Map<Location, VagtPostInfo> vagtPostMap = new HashMap<>();
     private Map<String, VagtPostInfo> vagtPostNameMap = new HashMap<>();
+
+    private Map<UUID,Boolean> headtest = new HashMap<>();
     private VagtPostManager configM;
     private LoadRewards loadRewards;
 
@@ -64,6 +67,19 @@ public class VagtPostLoader {
 
     public VagtPostInfo getVagtPostInfo(String name) {
         return vagtPostNameMap.get(name);
+    }
+
+    public void setHeadTest(UUID uuid, boolean b) {
+        headtest.put(uuid, b);
+    }
+    public boolean getHeadTest(UUID uuid) {
+        if(!headtest.containsKey(uuid)) {
+            return false;
+        }
+        return headtest.get(uuid);
+    }
+    public void removeHeadTest(UUID uuid) {
+        headtest.remove(uuid);
     }
 
 }
